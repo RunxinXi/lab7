@@ -6,15 +6,28 @@
     <sequenceFlow id="flow22" sourceRef="startevent3" targetRef="servicetask12"></sequenceFlow>
     <serviceTask id="servicetask13" name="Initialize and Deploy Real Estate Registry" activiti:class="mie.ether_example.DeployAndInitializeRealEstateRegistry"></serviceTask>
     <sequenceFlow id="flow23" sourceRef="servicetask12" targetRef="servicetask13"></sequenceFlow>
-    <userTask id="transactionForm" name="Enter Real Estate Transaction Information"></userTask>
+    <userTask id="transactionForm" name="Enter Real Estate Transaction Information">
+      <extensionElements>
+        <activiti:formProperty id="buyerName" name="buyerName"></activiti:formProperty>
+        <activiti:formProperty id="sellerName" name="sellerName"></activiti:formProperty>
+        <activiti:formProperty id="propertyAddress" name="propertyAddress"></activiti:formProperty>
+        <activiti:formProperty id="soldPrice" name="soldPrice"></activiti:formProperty>
+        <activiti:formProperty id="fundsInEscrow" name="fundsInEscrow"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="flow24" sourceRef="servicetask13" targetRef="transactionForm"></sequenceFlow>
     <serviceTask id="servicetask14" name="Check Client List" activiti:class="mie.ether_example.CheckClientList"></serviceTask>
     <sequenceFlow id="flow26" sourceRef="servicetask14" targetRef="inclusivegateway3"></sequenceFlow>
     <inclusiveGateway id="inclusivegateway3" name="Exclusive Gateway"></inclusiveGateway>
     <serviceTask id="servicetask15" name="Confirm Funds in Escrow" activiti:class="mie.ether_example.ConfirmFundsInEscrow"></serviceTask>
-    <sequenceFlow id="flow27" sourceRef="inclusivegateway3" targetRef="servicetask15"></sequenceFlow>
+    <sequenceFlow id="flow27" sourceRef="inclusivegateway3" targetRef="servicetask15">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${sellerIsClient == true}]]></conditionExpression>
+    </sequenceFlow>
     <serviceTask id="servicetask16" name="Confirm Property Ownership" activiti:class="mie.ether_example.ConfirmPropertyOwnership"></serviceTask>
-    <sequenceFlow id="flow28" sourceRef="inclusivegateway3" targetRef="servicetask16"></sequenceFlow>
+    <sequenceFlow id="flow28" sourceRef="inclusivegateway3" targetRef="servicetask16">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${buyerIsClient == true}
+]]></conditionExpression>
+    </sequenceFlow>
     <sequenceFlow id="flow29" sourceRef="servicetask15" targetRef="inclusivegateway4"></sequenceFlow>
     <inclusiveGateway id="inclusivegateway4" name="Exclusive Gateway"></inclusiveGateway>
     <sequenceFlow id="flow30" sourceRef="servicetask16" targetRef="inclusivegateway4"></sequenceFlow>
